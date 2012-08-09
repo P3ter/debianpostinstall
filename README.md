@@ -1,9 +1,11 @@
+Fork from https://github.com/nicolargo/debianpostinstall
+
 squeezeserverpostinstall.sh
 =======================================================
 
 A post install script dor Debian Server
 
-NGinxAutoInstall.sh
+nginxautoinstall.sh
 ===================
 
 Auto install NGinx + PHP-FPM + MemCached on Debian Squeeze or Lenny
