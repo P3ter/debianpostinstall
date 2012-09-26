@@ -81,13 +81,13 @@ displayandexec() {
 
 # Test que le script est lance en root
 if [ $EUID -ne 0 ]; then
-  echo "Le script doit √™tre lanc√© en root (droits administrateur)" 1>&2
+  echo "Le script doit être lancé en root (droits administrateur)" 1>&2
   exit 1
 fi
 
 displaytitle "Install prerequisites"
 
-# R√©cup√©ration GnuPG key pour DotDeb
+# Récupération GnuPG key pour DotDeb
 grep -rq '^deb\ .*dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
@@ -131,7 +131,7 @@ displayandexec "Update the repositories list" $APT_GET update
 # Pre-requis
 displayandexec "Install development tools" $APT_GET install build-essential libpcre3-dev libssl-dev zlib1g-dev
 displayandexec "Install PHP 5" $APT_GET install php5-cli php5-common php5-mysql php5-suhosin php5-fpm php-pear php5-apc php5-gd php5-curl
-displayandexec "Install MemCached" $APT_GET install libcache-memcached-perl php5-memcache memcached
+#displayandexec "Install MemCached" $APT_GET install libcache-memcached-perl php5-memcache memcached
 displayandexec "Install Redis" $APT_GET install redis-server php5-redis
 
 displaytitle "Install NGinx version $NGINX_VERSION"
@@ -173,7 +173,7 @@ fi
 # Nginx + default site
 if [ $TAGINSTALL == 1 ]
 then
-	displayandexec "Init the default configuration file for NGinx" "$WGET https://raw.github.com/nicolargo/debianpostinstall/master/nginx.conf ; $WGET https://raw.github.com/nicolargo/debianpostinstall/master/default-site ; mv nginx.conf /etc/nginx/ ; mv default-site /etc/nginx/sites-enabled/"
+	displayandexec "Init the default configuration file for NGinx" "$WGET https://raw.github.com/P3ter/Serveur/master/nginx/nginx.conf ; $WGET https://raw.github.com/P3ter/Serveur/master/nginx/p3ter.fr ; mv nginx.conf /etc/nginx/ ; mv p3ter.fr /etc/nginx/sites-enabled/"
 fi
 
 # Download the init script

@@ -12,7 +12,7 @@ VERSION="1.31"
 # Liste des applications à installer: A adapter a vos besoins
 # Voir plus bas les applications necessitant un depot specifique
 # Securite
-LISTE="cron-apt fail2ban lsb-release"
+LISTE="cron-apt fail2ban lsb-release sudo curl vim htop unzip tree rsync chkrootkit tmpreaper iotop slurm"
 #=============================================================================
 
 # Test que le script est lance en root
