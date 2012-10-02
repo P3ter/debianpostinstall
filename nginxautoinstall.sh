@@ -81,7 +81,7 @@ displayandexec() {
 
 # Test que le script est lance en root
 if [ $EUID -ne 0 ]; then
-  echo "Le script doit être lancé en root (droits administrateur)" 1>&2
+  echo "Le script doit √™tre lanc√© en root (droits administrateur)" 1>&2
   exit 1
 fi
 
@@ -103,7 +103,7 @@ then
   grep -rq '^deb\ .*packages\.dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
   if [ $? -ne 0 ]
   then  
-    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org squeeze-php54 all\ndeb-src http://packages.dotdeb.org squeeze-php54 all\n" >> /etc/apt/sources.list
+    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org squeeze all\ndeb-src http://packages.dotdeb.org squeeze all\n" >> /etc/apt/sources.list
   fi
 
 else
@@ -113,8 +113,16 @@ else
   grep -rq '^deb\ .*packages\.dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
   if [ $? -ne 0 ]
   then  
-    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org stable all\ndeb-src http://packages.dotdeb.org stable all\n" >> /etc/apt/sources.list
+    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org oldstable all\ndeb-src http://packages.dotdeb.org oldstable all\n" >> /etc/apt/sources.list
   fi
+
+  # Ajout DotDeb PHP 5.3 (http://www.dotdeb.org/)
+  grep -rq '^deb\ .*php53\.dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
+  if [ $? -ne 0 ]
+  then
+    echo -e "\n## DotDeb PHP 5.3\ndeb http://php53.dotdeb.org oldstable all\ndeb-src http://php53.dotdeb.org oldstable all\n" >> /etc/apt/sources.list
+  fi
+
 fi
 
 # MaJ des depots
@@ -122,8 +130,8 @@ displayandexec "Update the repositories list" $APT_GET update
 
 # Pre-requis
 displayandexec "Install development tools" $APT_GET install build-essential libpcre3-dev libssl-dev zlib1g-dev
-displayandexec "Install PHP 5" $APT_GET install php5-common php5-fpm php-pear php5-apc php5-gd php5-curl
-#displayandexec "Install MemCached" $APT_GET install libcache-memcached-perl php5-memcache memcached
+displayandexec "Install PHP 5" $APT_GET install php5-cli php5-common php5-mysql php5-suhosin php5-fpm php-pear php5-apc php5-gd php5-curl
+displayandexec "Install MemCached" $APT_GET install libcache-memcached-perl php5-memcache memcached
 displayandexec "Install Redis" $APT_GET install redis-server php5-redis
 
 displaytitle "Install NGinx version $NGINX_VERSION"
@@ -145,41 +153,41 @@ displayandexec "Compile NGinx version $NGINX_VERSION" make
 TAGINSTALL=0
 if [ -x /usr/local/nginx/sbin/nginx ]
 then
-	# Upgrade
-	cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.$DATE
-	displayandexec "Upgrade NGinx to version $NGINX_VERSION" make install
+  # Upgrade
+  cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.$DATE
+  displayandexec "Upgrade NGinx to version $NGINX_VERSION" make install
 
 else
-	# Install
-	displayandexec "Install NGinx version $NGINX_VERSION" make install
-	TAGINSTALL=1
+  # Install
+  displayandexec "Install NGinx version $NGINX_VERSION" make install
+  TAGINSTALL=1
 fi
 
 # Post installation
 if [ $TAGINSTALL == 1 ]
 then
-	displayandexec "Post installation script for NGinx version $NGINX_VERSION" "cd .. ; mkdir /var/lib/nginx ; mkdir /etc/nginx/conf.d ; mkdir /etc/nginx/sites-enabled ; mkdir /var/www ; chown -R www-data:www-data /var/www"
+  displayandexec "Post installation script for NGinx version $NGINX_VERSION" "cd .. ; mkdir /var/lib/nginx ; mkdir /etc/nginx/conf.d ; mkdir /etc/nginx/sites-enabled ; mkdir /var/www ; chown -R www-data:www-data /var/www"
 fi
 
 # Download the default configuration file
 # Nginx + default site
 if [ $TAGINSTALL == 1 ]
 then
-	displayandexec "Init the default configuration file for NGinx" "$WGET https://raw.github.com/P3ter/Serveur/master/nginx/nginx.conf ; $WGET https://raw.github.com/P3ter/Serveur/master/nginx/p3ter.fr ; mv nginx.conf /etc/nginx/ ; mv p3ter.fr /etc/nginx/sites-enabled/"
+  displayandexec "Init the default configuration file for NGinx" "$WGET https://raw.github.com/P3ter/Serveur/master/nginx/nginx.conf ; $WGET https://raw.github.com/P3ter/Serveur/master/nginx/p3ter.fr ; mv nginx.conf /etc/nginx/ ; mv default-site /etc/nginx/sites-enabled/"
 fi
 
 # Download the init script
-displayandexec "Install the NGinx init script" "$WGET https://raw.github.com/nicolargo/debianpostinstall/master/nginx ; mv nginx /etc/init.d/ ; chmod 755 /etc/init.d/nginx ; /usr/sbin/update-rc.d -f nginx defaults"
+displayandexec "Install the NGinx init script" "$WGET https://raw.github.com/P3ter/Serveur/master/nginx/nginx ; mv nginx /etc/init.d/ ; chmod 755 /etc/init.d/nginx ; /usr/sbin/update-rc.d -f nginx defaults"
 
 # Log file rotate
 cat > /etc/logrotate.d/nginx <<EOF
 /var/log/nginx/*_log {
-	missingok
-	notifempty
-	sharedscripts
-	postrotate
-		/bin/kill -USR1 \`cat /var/run/nginx.pid 2>/dev/null\` 2>/dev/null || true
-	endscript
+  missingok
+  notifempty
+  sharedscripts
+  postrotate
+    /bin/kill -USR1 \`cat /var/run/nginx.pid 2>/dev/null\` 2>/dev/null || true
+  endscript
 }
 EOF
 
@@ -188,11 +196,11 @@ displaytitle "Start processes"
 # Start PHP5-FPM and NGinx
 if [ $TAGINSTALL == 1 ]
 then
-	displayandexec "Start PHP 5" /etc/init.d/php5-fpm start
-	displayandexec "Start NGinx" /etc/init.d/nginx start
+  displayandexec "Start PHP 5" /etc/init.d/php5-fpm start
+  displayandexec "Start NGinx" /etc/init.d/nginx start
 else
-	displayandexec "Restart PHP 5" /etc/init.d/php5-fpm restart
-	displayandexec "Restart NGinx" "killall nginx ; /etc/init.d/nginx start"
+  displayandexec "Restart PHP 5" /etc/init.d/php5-fpm restart
+  displayandexec "Restart NGinx" "killall nginx ; /etc/init.d/nginx start"
 fi
 
 # Summary
@@ -204,7 +212,7 @@ echo "NGinx configuration folder:       /etc/nginx"
 echo "NGinx default site configuration: /etc/nginx/sites-enabled/default-site"
 echo "NGinx default HTML root:          /var/www"
 echo ""
-echo "Installation script  log file:	$LOG_FILE"
+echo "Installation script  log file:  $LOG_FILE"
 echo ""
 echo "Notes: If you use IpTables add the following rules"
 echo "iptables -A INPUT -i lo -s localhost -d localhost -j ACCEPT"
