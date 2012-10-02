@@ -81,7 +81,7 @@ displayandexec() {
 
 # Test que le script est lance en root
 if [ $EUID -ne 0 ]; then
-  echo "Le script doit √™tre lanc√© en root (droits administrateur)" 1>&2
+  echo "Le script doit être lancé en root (droits administrateur)" 1>&2
   exit 1
 fi
 
@@ -130,7 +130,7 @@ displayandexec "Update the repositories list" $APT_GET update
 
 # Pre-requis
 displayandexec "Install development tools" $APT_GET install build-essential libpcre3-dev libssl-dev zlib1g-dev
-displayandexec "Install PHP 5" $APT_GET install php5-cli php5-common php5-mysql php5-suhosin php5-fpm php-pear php5-apc php5-gd php5-curl
+displayandexec "Install PHP" $APT_GET install php5-cli php5-common php5-fpm php-pear php5-apc php5-gd php5-curl
 displayandexec "Install Redis" $APT_GET install redis-server php5-redis
 
 displaytitle "Install NGinx version $NGINX_VERSION"
@@ -195,10 +195,10 @@ displaytitle "Start processes"
 # Start PHP5-FPM and NGinx
 if [ $TAGINSTALL == 1 ]
 then
-  displayandexec "Start PHP 5" /etc/init.d/php5-fpm start
+  displayandexec "Start PHP " /etc/init.d/php5-fpm start
   displayandexec "Start NGinx" /etc/init.d/nginx start
 else
-  displayandexec "Restart PHP 5" /etc/init.d/php5-fpm restart
+  displayandexec "Restart PHP" /etc/init.d/php5-fpm restart
   displayandexec "Restart NGinx" "killall nginx ; /etc/init.d/nginx start"
 fi
 
