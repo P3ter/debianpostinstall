@@ -103,7 +103,7 @@ then
   grep -rq '^deb\ .*packages\.dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
   if [ $? -ne 0 ]
   then  
-    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org squeeze all\ndeb-src http://packages.dotdeb.org squeeze all\n" >> /etc/apt/sources.list
+    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org squeeze-php54 all\ndeb-src http://packages.dotdeb.org squeeze-php54 all\n" >> /etc/apt/sources.list
   fi
 
 else
@@ -113,16 +113,8 @@ else
   grep -rq '^deb\ .*packages\.dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
   if [ $? -ne 0 ]
   then  
-    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org oldstable all\ndeb-src http://packages.dotdeb.org oldstable all\n" >> /etc/apt/sources.list
+    echo -e "\n## DotDeb Package\ndeb http://packages.dotdeb.org stable all\ndeb-src http://packages.dotdeb.org stable all\n" >> /etc/apt/sources.list
   fi
-
-  # Ajout DotDeb PHP 5.3 (http://www.dotdeb.org/)
-  grep -rq '^deb\ .*php53\.dotdeb' /etc/apt/sources.list.d/*.list /etc/apt/sources.list > /dev/null 2>&1
-  if [ $? -ne 0 ]
-  then
-    echo -e "\n## DotDeb PHP 5.3\ndeb http://php53.dotdeb.org oldstable all\ndeb-src http://php53.dotdeb.org oldstable all\n" >> /etc/apt/sources.list
-  fi
-
 fi
 
 # MaJ des depots
