@@ -1,4 +1,4 @@
-Fork from https://github.com/nicolargo/debianpostinstall
+Fork from https://github.com/nicolargo/debianpostinstall for my PluXml blog
 
 squeezeserverpostinstall.sh
 =======================================================
