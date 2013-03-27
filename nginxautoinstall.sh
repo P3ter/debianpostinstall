@@ -9,12 +9,12 @@
 # Syntaxe: # su - -c "./nginxautoinstall.sh"
 # Syntaxe: or # sudo ./nginxautoinstall.sh
 #
-VERSION="1.53"
+VERSION="1.1"
 
 ##############################
 # Version de NGinx a installer
 
-NGINX_VERSION="1.3.10"   # The dev version
+NGINX_VERSION="1.3.15"   # The dev version
 #NGINX_VERSION="1.2.6"   # The stable version
 
 ###############################
@@ -172,7 +172,7 @@ fi
 # Nginx + default site
 if [ $TAGINSTALL == 1 ]
 then
-  displayandexec "Init the default configuration file for NGinx" "$WGET https://raw.github.com/P3ter/Serveur/master/nginx/nginx.conf ; $WGET https://raw.github.com/P3ter/Serveur/master/nginx/p3ter.fr ; mv nginx.conf /etc/nginx/ ; mv p3ter.fr /etc/nginx/sites-enabled/"
+  displayandexec "Init the default configuration file for NGinx" "$WGET https://raw.github.com/P3ter/Serveur/master/nginx/nginx.conf ; $WGET https://raw.github.com/P3ter/Serveur/master/nginx/default ; mv nginx.conf /etc/nginx/ ; mv default /etc/nginx/sites-enabled/"
 fi
 
 # Download the init script
@@ -208,7 +208,7 @@ echo "--------------------------------------------------------------------------
 echo "                    NGinx + PHP5-FPM installation finished"
 echo "------------------------------------------------------------------------------"
 echo "NGinx configuration folder:       /etc/nginx"
-echo "NGinx default site configuration: /etc/nginx/sites-enabled/default-site"
+echo "NGinx default site configuration: /etc/nginx/sites-enabled/default"
 echo "NGinx default HTML root:          /var/www"
 echo ""
 echo "Installation script  log file:  $LOG_FILE"
